@@ -1,55 +1,56 @@
 #include <iostream>
 
-
 #include "StaticArray.hpp"
-#include "SortedList.hpp"
+
 
 static std::string classicalJump(const StaticArray<int>& arr)
 {
 	size_t n = arr.size();
-	SortedList<int> diff(n - 1);
+	if (n < 2) {
+		return "Jolly";
+	}
+
+	StaticArray<bool> diff(n - 1);
+	for (int i = 0; i < n - 1; ++i) {
+		diff.pushBack(false);
+	}
 
 	for (int i = 0; i < n - 1; ++i) {
-		diff.insert(
-			(arr[i] - arr[i + 1]) < 0 ? (arr[i + 1] - arr[i]) : (arr[i] - arr[i + 1]) // Absolute value
-		);
-	}
-
-	for (int i = 0; i < n - 2; ++i) { // Verify if all the numbers are
-		if (diff[i+1] - diff[i] != 1) {
+		int value = std::abs(arr[i] - arr[i + 1]);
+		//  lower limit      upper limit        already exists
+		if (value < 1 || value >= n || diff[value - 1]) {
 			return "Not jolly";
 		}
+		diff[value - 1] = true;
 	}
+
+
 	return "Jolly";
 }
 
-StaticArray<int> read()
+void read(StaticArray<int>& arr)
 {
-    size_t n;
-	std::cin >> n;
-	StaticArray<int> arr(n);
+	size_t n = arr.capacity();
 
-
-    for (int i = 0; i < n; ++i) {
-        int value;
+	for (int i = 0; i < n; ++i) {
+		int value;
 		std::cin >> value;
 		arr.pushBack(value);
-    }
-
-    return arr;
+	}
 }
 
 
 int main(int argc, const char* argv[])
 {
-	while (std::cin) {
-		try {
-			StaticArray<int> arr = read();
+	try {
+		size_t n;
+		while (std::cin >> n) {
+			StaticArray<int> arr(n);
+			read(arr);
 			std::cout << classicalJump(arr) << std::endl;
 		}
-		catch (const std::exception& e) {
-			std::cerr << e.what() << std::endl;
-			return 1;
-		}
+	}
+	catch (...) {
+		return 0;
 	}
 }
