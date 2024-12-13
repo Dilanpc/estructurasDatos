@@ -9,7 +9,7 @@ class Stack
 	T* last;
 	T* end;
 
-
+	
 public:
 	Stack(size_t size);
 	~Stack();
@@ -20,6 +20,7 @@ public:
 
 	void empty();
 	size_t size() const { return last - bottom; }
+	size_t capacity() const { return end - bottom; }
 
 };
 
@@ -38,8 +39,7 @@ Stack<T>::~Stack() {
 template <typename T>
 void Stack<T>::push(const T& value) {
 	if (last > end) {
-		std::cout << "Stack Overflow" << std::endl;
-		return;
+		throw std::runtime_error("Stack Overflow");
 	}
 	*last = value;
 	++last;
@@ -48,13 +48,16 @@ void Stack<T>::push(const T& value) {
 template <typename T>
 T Stack<T>::pop() {
 	if (bottom == last) {
-		return 0;
+		throw std::runtime_error("Stack Underflow");
 	}
 	return *(--last);
 }
 
 template <typename T>
 T& Stack<T>::top() {
+	if (bottom == last) {
+		throw std::runtime_error("Stack Underflow");
+	}
 	return *(last - 1);
 }
 
