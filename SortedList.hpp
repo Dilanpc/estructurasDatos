@@ -42,14 +42,24 @@ SortedList<T>::SortedList(size_t size)
 template<typename T>
 typename StaticArray<T>::Iterator SortedList<T>::search(const T& value) const
 {
-	for (auto it = StaticArray<T>::begin(); it != StaticArray<T>::end(); ++it)
+	auto left = begin();
+	auto right = back();
+
+	auto mid = begin();
+	while (right - left > 0)
 	{
-		if (*it >= value)
+		mid = left + (right - left) / 2; // get the middle of the two iterators
+		if (*mid < value) // Move right
 		{
-			return it;
+			left = mid + 1; // +1 avoids infinite loop when left + 1 == right, also mid is already checked
+		}
+		else // Move left
+		{
+			right = mid;
 		}
 	}
-	return StaticArray<T>::back();
+
+	return right;
 }
 
 template <typename T>
@@ -61,9 +71,10 @@ template <typename T>
 T* SortedList<T>::find(const T& value) const
 {
 	auto it = search(value);
-	if (it != StaticArray<T>::end() && *it == value)
-	{
+
+	if (it < back() && *it == value) {
 		return &(*it);
 	}
+
 	return nullptr;
 }

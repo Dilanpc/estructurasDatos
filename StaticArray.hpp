@@ -28,12 +28,21 @@ protected:
 		Iterator operator+(size_t n) { return Iterator(current + n); }
 		Iterator operator-(size_t n) { return Iterator(current - n); }
 
+		Iterator& operator+=(size_t n) { current += n; return *this; }
+		Iterator& operator-=(size_t n) { current -= n; return *this; }
+
+		ptrdiff_t operator-(const Iterator& other) { return current - other.current; }
+
 		bool operator==(const Iterator& other) const {
 			return current == other.current;
 		}
 
 		bool operator!=(const Iterator& other) const {
 			return current != other.current;
+		}
+
+		bool operator<(const Iterator& other) const {
+			return current < other.current;
 		}
 
 		void advance(size_t n) {
