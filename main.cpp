@@ -1,15 +1,15 @@
 #include <iostream>
 #include <string>
 
-#include "DinamicArray.hpp"
+#include "StaticArray.hpp"
+#include "LinkedListT.hpp"
 
 // Create subgroups for each string, then merge them
 static void stringMadness(size_t n)
 {
 	std::cin.ignore();
-	StaticArray<std::string*> strings(n); // using pointers to avoid copying strings
 
-	DinamicArray<DinamicArray<std::string*>*> subGrp; // Save the combinations, using pointers for compatibility inside a DinamicArray
+	StaticArray<LinkedListT<std::string*>*> groups(n); // using pointers to avoid copying lists
 
 	// Read strings
 	for (size_t i = 0; i < n; ++i)
@@ -17,11 +17,10 @@ static void stringMadness(size_t n)
 		// Get the string
 		std::string* str = new std::string;
 		std::getline(std::cin, *str);
-		// Save the string and create a group with it
-		strings.pushBack(str);
-		subGrp.pushBack(new DinamicArray<std::string*>());
-		subGrp[i]->pushBack(str);
 
+		// Creat a grup
+		groups.pushBack(new LinkedListT<std::string*>);
+		groups[i]->pushBack(str);
 	}
 
 
@@ -35,16 +34,13 @@ static void stringMadness(size_t n)
 		--a; --b; // Adjust to index
 
 		// Push all the pointers of group of 'b' to the group of 'a'
-		for (size_t j = 0; j < subGrp[b]->size(); ++j)
-		{
-			subGrp[a]->pushBack((*subGrp[b])[j]);
-		}
+		groups[a]->pushBack(*groups[b]);
 	}
 
 	// Print result
-	for (size_t i = 0; i < subGrp[a]->size(); ++i)
+	for (const auto& it : *groups[a])
 	{
-		std::cout << *(*subGrp[a])[i]; // Print 'a' as it was the last modified
+		std::cout << *it;
 	}
 	std::cout << std::endl;
 
@@ -52,8 +48,11 @@ static void stringMadness(size_t n)
 	// Free memory
 	for (size_t i = 0; i < n; ++i)
 	{
-		delete strings[i]; // std::string *
-		delete subGrp[i]; // DinamicArray<std::string*> *
+		for (auto it : *groups[i])
+		{
+			delete it; // delete the string
+		}
+		delete groups[i]; // delete the list
 	}
 }
 
@@ -62,15 +61,12 @@ static void stringMadness(size_t n)
 
 int main(int argc, const char* argv[])
 {
+	std::ios_base::sync_with_stdio(false); std::cin.tie(nullptr); // Fast IO
+
 	size_t n;
-	try {
-		while (std::cin >> n)
-		{
-			stringMadness(n);
-		}
+
+	while (std::cin >> n)
+	{
+		stringMadness(n);
 	}
-	catch (...) {
-		return 0;
-	}
-	
 }
