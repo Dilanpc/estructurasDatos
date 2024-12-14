@@ -20,11 +20,15 @@ public:
 
 	void pushFront(const T& value) override;
 	void pushBack(const T& value) override;
+	void pushBack(LinkedListT<T>& list); // Append a list, the other list will be empty
 
 	T popFront() override;
 	T popBack() override;
 
 	void addAfter(Iterator it, T value);
+
+private:
+	using LinkedListS<T>::pushBack;
 
 };
 
@@ -54,6 +58,21 @@ void LinkedListT<T>::pushBack(const T& value)
 		tail->next = node;
 		tail = node;
 	}
+}
+
+template <typename T>
+void LinkedListT<T>::pushBack(LinkedListT<T>& list)
+{
+	if (!head) {
+		head = list.head;
+		tail = list.tail;
+	}
+	else {
+		tail->next = list.head;
+		tail = list.tail;
+	}
+	list.head = nullptr; // empty the list, the memory now is managed by this list
+	list.tail = nullptr;
 }
 
 template <typename T>

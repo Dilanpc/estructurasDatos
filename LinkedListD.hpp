@@ -34,6 +34,9 @@ protected:
 		bool operator!=(const Iterator& other) const {
 			return current != other.current;
 		}
+		bool operator!=(const Node* other) {
+			return current != other;
+		}
 
 		void advance(size_t n) {
 			while (n-- && current) ++(*this);
@@ -50,14 +53,15 @@ protected:
 public:
 	~LinkedListD();
 
-	void pushFront(T value) override;
-	void pushBack(T value) override;
+	void pushFront(const T& value) override;
+	void pushBack(const T& value) override;
+	void pushBack(LinkedListD<T>& list); // Append a list, the other list will be empty
 
-	void popFront() override;
-	void popBack() override;
+	T popFront() override;
+	T popBack() override;
 
-	T* find(const T& value) override;
-	void erease(const T* element) override;
+	T* find(const T& value) const override;
+	void erase(T* element) override;
 
 	void addBefore(Iterator it, T value);
 	void addAfter(Iterator it, T value);
@@ -67,7 +71,10 @@ public:
 	void print() const override;
 
 	Iterator begin() { return Iterator(head); }
-	Iterator end() { return Iterator(nullptr); }
+	Iterator end() { return nullptr; }
+
+private:
+	using LinkedListS<T>::pushBack;
 };
 
 template <typename T>
@@ -77,7 +84,7 @@ LinkedListD<T>::~LinkedListD()
 }
 
 template <typename T>
-void LinkedListD<T>::pushFront(T value)
+void LinkedListD<T>::pushFront(const T& value)
 {
 	Node* node = new Node(value);
 
@@ -94,7 +101,7 @@ void LinkedListD<T>::pushFront(T value)
 
 
 template<typename T>
-void LinkedListD<T>::pushBack(T value)
+void LinkedListD<T>::pushBack(const T& value)
 {
 	Node* node = new Node(value);
 	if (tail) {
@@ -109,30 +116,47 @@ void LinkedListD<T>::pushBack(T value)
 }
 
 template <typename T>
-void LinkedListD<T>::popFront()
+void LinkedListD<T>::pushBack(LinkedListD<T>& list)
 {
 	if (!head) {
-		std::cout << "Error: Lista vacia. No se puede eliminar el element." << std::endl;
-		return;
+		head = list.head;
+		tail = list.tail;
+	}
+	else {
+		tail->next = list.head;
+		list.head->prev = tail;
+		tail = list.tail;
+	}
+	list.head = nullptr; // empty the list, the memory now is managed by this list
+	list.tail = nullptr;
+}
+
+template <typename T>
+T LinkedListD<T>::popFront()
+{
+	if (!head) {
+		throw std::runtime_error("Error: Lista vacia. No se puede eliminar el elemento.");
 	}
 	Node* toDelete = head;
+	T value = toDelete->value;
 	head = head->next;
 	delete toDelete;
 	if (head)
 	{
 		head->prev = nullptr;
 	}
+	return value;
 }
 
 template <typename T>
-void LinkedListD<T>::popBack()
+T LinkedListD<T>::popBack()
 {
 	if (!tail) {
-		std::cout << "Error: Lista vacia. No se puede eliminar el element." << std::endl;
-		return;
+		throw std::runtime_error("Error: Lista vacia. No se puede eliminar el elemento.");
 	}
 
 	Node* toDelete = tail;
+	T value = toDelete->value;
 	tail = tail->prev;
 	delete toDelete;
 	if (tail) {
@@ -141,11 +165,11 @@ void LinkedListD<T>::popBack()
 	else { // If the last element was deleted
 		head = nullptr;
 	}
-
+	return value;
 }
 
 template <typename T>
-T* LinkedListD<T>::find(const T& value)
+T* LinkedListD<T>::find(const T& value) const
 {
 	for (Node* current = head; current; current = current->next) {
 		if (current->value == value) {
@@ -156,7 +180,7 @@ T* LinkedListD<T>::find(const T& value)
 }
 
 template <typename T>
-void LinkedListD<T>::erease(const T* element)
+void LinkedListD<T>::erase(T* element)
 {
 	Node* toDelete{};
 	for (Node* current = head; current; current = current->next) {

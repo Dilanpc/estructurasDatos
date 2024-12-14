@@ -39,15 +39,13 @@ protected:
 		bool operator!=(const Iterator& other) const {
 			return current != other.current;
 		}
-		bool operator !=(const Node* other) {
+		bool operator!=(const Node* other) {
 			return current != other;
 		}
 
 		void advance(size_t n) {
 			while (n-- && current) ++(*this);
 		}
-
-		
 	};
 
 	Node* head{};
@@ -57,6 +55,7 @@ public:
 
 	void pushFront(const T& value) override;
 	void pushBack(const T& value) override;
+	void pushBack(LinkedListS<T>& list); // Append a list, the other list will be empty
 
 	T popFront() override;
 	T popBack() override;
@@ -106,6 +105,24 @@ void LinkedListS<T>::pushBack(const T& value)
 		// when next is nullptr
 		current->next = node;
 	}
+}
+
+template <typename T>
+void LinkedListS<T>::pushBack(LinkedListS<T>& list)
+{
+	if (!head) {
+		head = list.head;
+		list.head = nullptr; // empty the list, the memory now is managed by this list
+		return;
+	}
+	// get to the last node
+	Node* current = head;
+	while (current->next) {
+		current = current->next;
+	}
+
+	current->next = list.head;
+	list.head = nullptr; // empty the list, the memory now is managed by this list
 }
 
 template <typename T>
