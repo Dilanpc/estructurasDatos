@@ -20,6 +20,7 @@ public:
 	T& top();
 
 	void empty();
+	bool isEmpty() const { return bottom == last; }
 	size_t size() const { return last - bottom; }
 	size_t capacity() const { return end - bottom; }
 
