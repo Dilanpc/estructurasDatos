@@ -43,7 +43,7 @@ template<typename T>
 typename StaticArray<T>::Iterator SortedList<T>::search(const T& value) const
 {
 	auto left = begin();
-	auto right = back();
+	auto right = end();
 
 	auto mid = begin();
 	while (right - left > 0)
@@ -72,7 +72,7 @@ T* SortedList<T>::find(const T& value) const
 {
 	auto it = search(value);
 
-	if (it < back() && *it == value) {
+	if (it < end() && *it == value) {
 		return &(*it);
 	}
 

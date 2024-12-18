@@ -17,7 +17,7 @@ public:
 	void push(const T& value);
 	T pop(); // Returns a copy
 	T& popRef(); // Returns a reference, if the stack is deleted, the reference will be invalid
-	T& top();
+	T& top() const;
 
 	void empty();
 	bool isEmpty() const { return bottom == last; }
@@ -44,7 +44,7 @@ Stack<T>::~Stack()
 template <typename T>
 void Stack<T>::push(const T& value)
 {
-	if (last > end) {
+	if (last >= end) {
 		throw std::runtime_error("Stack Overflow");
 	}
 	*last = value;
@@ -70,7 +70,7 @@ T& Stack<T>::popRef()
 }
 
 template <typename T>
-T& Stack<T>::top()
+T& Stack<T>::top() const
 {
 	if (bottom == last) {
 		throw std::runtime_error("Stack Underflow");

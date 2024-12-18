@@ -9,10 +9,12 @@ class StaticArray : public IList<T>
 protected:
 	T* m_arr;
 	T* m_last;
-	T* m_end;
+	T* m_limit;
 
 	class Iterator
 	{
+		friend class StaticArray<T>;
+	protected:
 		T* current;
 
 	public:
@@ -22,8 +24,8 @@ protected:
 
 		T& operator->() { return *current; }
 
-		Iterator& operator++() { ++current; return *this; }
-		Iterator& operator--() { --current; return *this; }
+		virtual Iterator& operator++() { ++current; return *this; }
+		virtual Iterator& operator--() { --current; return *this; }
 
 		Iterator operator+(size_t n) { return Iterator(current + n); }
 		Iterator operator-(size_t n) { return Iterator(current - n); }
@@ -61,7 +63,7 @@ public:
 	T popBack() override;
 	
 	T* find(const T& value) const override;
-	void erase(T* value) override;
+	void erase(const T& value) override;
 
 	void addBefore(T* reference, const T& value);
 	void addBefore(Iterator it, const T& value);
@@ -72,13 +74,13 @@ public:
 	void popAt(size_t index);
 
 	Iterator begin() const { return Iterator(m_arr); }
-	Iterator back() const { return Iterator(m_last); }
-	Iterator end() const { return Iterator(m_end); }
+	T& back() const { if (m_arr == m_last) throw std::runtime_error("Empty array"); return *(m_last - 1); };
+	Iterator end() const { return Iterator(m_last); }
 
 	void empty() override;
 
-	size_t size() const;
-	size_t capacity() const;
+	virtual size_t size() const;
+	virtual size_t capacity() const;
 	virtual T& operator[](size_t index) const;
 	void print() const override;
 
@@ -90,7 +92,7 @@ StaticArray<T>::StaticArray(size_t size)
 {
 	m_arr = new T[size];
 	m_last = m_arr;
-	m_end = m_arr + size;
+	m_limit = m_arr + size;
 }
 
 template <typename T>
@@ -104,7 +106,7 @@ StaticArray<T>::~StaticArray()
 template <typename T>
 void StaticArray<T>::pushFront(const T& value)
 {
-	if (m_last == m_end) {
+	if (m_last >= m_limit) {
 		throw std::runtime_error("Error: Lista llena. No se puede agregar el elemento.");
 	}
 
@@ -119,19 +121,17 @@ void StaticArray<T>::pushFront(const T& value)
 template <typename T>
 void StaticArray<T>::pushBack(const T& value)
 {
-	if (m_last < m_end) {
-		*m_last = value;
-		++m_last;
-	}
-	else {
+	if (m_last >= m_limit) {
 		throw std::runtime_error("Error: Lista llena. No se puede agregar el elemento.");
 	}
+	*m_last = value;
+	++m_last;
 }
 
 template <typename T>
 T StaticArray<T>::popFront()
 {
-	if (m_last == m_arr) {
+	if (m_last <= m_arr) {
 		throw std::runtime_error("Error: Lista vacia. No se puede eliminar el elemento.");
 	}
 	--m_last;
@@ -145,13 +145,11 @@ T StaticArray<T>::popFront()
 template <typename T>
 T StaticArray<T>::popBack()
 {
-	if (m_last != m_arr) {
-		m_last = m_last - 1;
-		return *m_last;
-	}
-	else {
+	if (m_last <= m_arr) {
 		throw std::runtime_error("Error: Lista vacia. No se puede eliminar el elemento.");
 	}
+	m_last = m_last - 1;
+	return *m_last;
 }
 
 template <typename T>
@@ -166,15 +164,17 @@ T* StaticArray<T>::find(const T& value) const
 }
 
 template <typename T>
-void StaticArray<T>::erase(T* value)
+void StaticArray<T>::erase(const T& value)
 {
-	if (!find(*value)) {
-		throw std::runtime_error("Error: Elemento no encontrado. No se puede eliminar.");
+	for (T* current = m_arr; current < m_last; ++current) {
+		if (*current == value) {
+			for (T* it = current; it < m_last; ++it) { // Shift elements to the left
+				*it = *(it + 1);
+			}
+			--m_last;
+			return;
+		}
 	}
-	for (T* current = value; current < m_last; ++current) {
-		*current = *(current + 1);
-	}
-	--m_last;
 }
 
 template <typename T>
@@ -183,7 +183,7 @@ void StaticArray<T>::addBefore(T* reference, const T& value)
 	if (!find(reference)) {
 		throw std::runtime_error("Error: Elemento no encontrado. No se puede agregar el elemento.");
 	}
-	if (m_last == end) {
+	if (m_last >= m_limit) {
 		throw std::runtime_error("Error: Lista llena. No se puede agregar el elemento.");
 	}
 	for (T* current = m_last; current >= reference; --current) {
@@ -195,10 +195,10 @@ void StaticArray<T>::addBefore(T* reference, const T& value)
 
 template <typename T>
 void StaticArray<T>::addBefore(Iterator it, const T& value) {
-	if (m_last == m_end) {
+	if (m_last == m_limit) {
 		throw std::runtime_error("Error: Lista llena. No se puede agregar el elemento.");
 	}
-	T* reference = &(*it); // Convert iterator to pointer
+	T* reference = it.current; // Convert iterator to pointer
 	for (T* current = m_last; current > reference; --current) {
 		*current = *(current - 1);
 	}
@@ -212,7 +212,7 @@ void StaticArray<T>::addAfter(T* reference, const T& value)
 	if (!find(reference)) {
 		throw std::runtime_error("Error: Elemento no encontrado. No se puede agregar el elemento.");
 	}
-	if (m_last == m_end) {
+	if (m_last == m_limit) {
 		throw std::runtime_error("Error: Lista llena. No se puede agregar el elemento.");
 	}
 	for (T* current = m_last; current > reference; --current) {
@@ -224,7 +224,7 @@ void StaticArray<T>::addAfter(T* reference, const T& value)
 
 template <typename T>
 void StaticArray<T>::addAfter(Iterator it, const T& value) {
-	if (m_last == m_end) {
+	if (m_last >= m_limit) {
 		throw std::runtime_error("Error: Lista llena. No se puede agregar el elemento.");
 	}
 	T* reference = &(*it); // Convert iterator to pointer
@@ -285,7 +285,7 @@ size_t StaticArray<T>::size() const
 template <typename T>
 size_t StaticArray<T>::capacity() const
 {
-	return m_end - m_arr;
+	return m_limit - m_arr;
 }
 
 template <typename T>

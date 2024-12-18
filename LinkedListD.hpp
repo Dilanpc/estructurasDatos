@@ -61,7 +61,7 @@ public:
 	T popBack() override;
 
 	T* find(const T& value) const override;
-	void erase(T* element) override;
+	void erase(const T& element) override;
 
 	void addBefore(Iterator it, T value);
 	void addAfter(Iterator it, T value);
@@ -180,11 +180,11 @@ T* LinkedListD<T>::find(const T& value) const
 }
 
 template <typename T>
-void LinkedListD<T>::erase(T* element)
+void LinkedListD<T>::erase(const T& element)
 {
 	Node* toDelete{};
 	for (Node* current = head; current; current = current->next) {
-		if (&current->value == element) {
+		if (current->value == element) {
 			toDelete = current;
 			break;
 		}

@@ -61,7 +61,7 @@ public:
 	T popBack() override;
 
 	T* find(const T& value) const override;
-	void erase(T* element) override;
+	void erase(const T& element) override;
 
 	virtual void addBefore(Iterator it, const T& value);
 	virtual void addAfter(Iterator it, const T& value);
@@ -170,7 +170,7 @@ T* LinkedListS<T>::find(const T& value) const
 }
 
 template <typename T>
-void LinkedListS<T>::erase(T* element)
+void LinkedListS<T>::erase(const T& element)
 {
 	if (!head) {
 		throw std::runtime_error("Error: Lista vacia. No se puede eliminar el elemento.");
@@ -178,7 +178,7 @@ void LinkedListS<T>::erase(T* element)
 	Node* toDelete = head;
 	Node* previus{};
 	while (toDelete) {
-		if (&toDelete->value == element) {
+		if (toDelete->value == element) {
 			if (previus) { // if it is NOT the first element
 				previus->next = toDelete->next;
 			}

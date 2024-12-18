@@ -7,11 +7,13 @@
 template <typename T>
 class CircularArray : public StaticArray<T>
 {
-	using StaticArray<T>::arr;
-	using StaticArray<T>::end;
-	using StaticArray<T>::last;
-	T* front;
+	using StaticArray<T>::m_arr; // Aim to the first element of the array
+	using StaticArray<T>::m_limit; // Aim to the next element of the array
+	using StaticArray<T>::m_last; // Aim to the next available space
+	T* front; // Aim to the first element
 	bool full = false;
+
+
 public:
 	CircularArray(size_t size);
 
@@ -21,9 +23,14 @@ public:
 	T popFront() override;
 	T popBack() override;
 
-	size_t size();
+	size_t size() const override;
 
 	void print() const override;
+
+private:
+	using StaticArray<T>::begin;
+	using StaticArray<T>::end;
+	using StaticArray<T>::back;
 
 };
 
@@ -31,7 +38,7 @@ public:
 
 template <typename T>
 CircularArray<T>::CircularArray(size_t size)
-	: StaticArray<T>(size), front(arr)
+	: StaticArray<T>(size), front(m_arr)
 {
 }
 
@@ -43,11 +50,11 @@ void CircularArray<T>::pushFront(const T& value)
 	}
 
 	--front;
-	if (front < arr) {
-		front = end - 1;
+	if (front < m_arr) { // If the front is at the beginning of the array, move it to the end
+		front = m_limit - 1;
 	}
 	*front = value;
-	if (front == last) {
+	if (front == m_last) {
 		full = true;
 	}
 
@@ -55,30 +62,30 @@ void CircularArray<T>::pushFront(const T& value)
 
 template <typename T>
 void CircularArray<T>::pushBack(const T& value) {
-	if (!full) { // If the queue is not full
-		*last = value;
-		++last;
-		if (last == end) {
-			last = arr;
-		}
-		if (last == front) {
-			full = true;
-		}
-	}
-	else {
+	if (full) {
 		throw std::runtime_error("Error: Lista llena. No se puede agregar el elemento.");
 	}
+	
+	*m_last = value;
+	++m_last;
+	if (m_last == m_limit) { // If the last is at the end of the array, move it to the beginning
+		m_last = m_arr;
+	}
+	if (m_last == front) {
+		full = true;
+	}
+
 }
 
 template <typename T>
 T CircularArray<T>::popFront() {
-	if (front == last && !full) {
+	if (front == m_last && !full) {
 		throw std::runtime_error("Array is empty");
 	}
 	T value = *front;
 	++front;
-	if (front == end) {
-		front = arr;
+	if (front == m_limit) {  // If the front is at the end of the array, move it to the beginning
+		front = m_arr;
 	}
 	full = false;
 	return value;
@@ -87,26 +94,26 @@ T CircularArray<T>::popFront() {
 template <typename T>
 T CircularArray<T>::popBack()
 {
-	if (last == front && !full) {
+	if (m_last == front && !full) {
 		throw std::runtime_error("Error: Lista vacia. No se puede eliminar el elemento.");
 	}
-	--last;
-	if (last < arr) {
-		last = end - 1;
+	--m_last;
+	if (m_last < m_arr) { // If the last is at the beginning of the array, move it to the end
+		m_last = m_limit - 1; // as m_last was pointing to the arr, we pop the last element of the array (m_limit-1)
 	}
 	if (full) {
 		full = false;
 	}
-	return *last;
+	return *m_last;
 }
 
 
 template <typename T>
-size_t CircularArray<T>::size()
+size_t CircularArray<T>::size() const
 {
-	if (full) return end - arr;
-	if (front <= last) return last - front;
-	return (end - front) + (last - arr);
+	if (full) return m_limit - m_arr; // capacity
+	if (front <= m_last) return m_last - front; // The array is contiguous
+	return (m_limit - front) + (m_last - m_arr); // The array is not contiguous, so we need to sum the two parts
 }
 
 template <typename T>
@@ -114,17 +121,17 @@ void CircularArray<T>::print() const
 {
 	std::cout << "Elementos en el arreglo: [";
 	T* it = front;
-	if (front == last && !full) { // is empty
+	if (front == m_last && !full) { // is empty
 		std::cout << "]" << std::endl;
 		return;
 	}
 	while (true) {
 		std::cout << *it;
 		++it;
-		if (it == end) {
-			it = arr;
+		if (it == m_limit) {
+			it = m_arr;
 		}
-		if (it == last) {
+		if (it == m_last) {
 			break;
 		}
 		std::cout << " ";

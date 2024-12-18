@@ -12,7 +12,7 @@ public:
 	virtual T popBack() = 0;
 
 	virtual T* find(const T& value) const = 0;
-	virtual void erase(T* element) = 0;
+	virtual void erase(const T& element) = 0;
 
 	virtual void empty() = 0;
 
