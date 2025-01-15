@@ -26,7 +26,9 @@ protected:
 		T& operator*() { return current->value; }
 
 		Iterator& operator++() { current = current->next; return *this; }
+		Iterator& operator--() { current = current->prev; return *this; }
 
+		Iterator& operator=(const Iterator& other) { current = other.current; }
 		bool operator==(const Iterator& other) const {
 			return current == other.current;
 		}
@@ -66,11 +68,13 @@ public:
 	void addBefore(Iterator it, T value);
 	void addAfter(Iterator it, T value);
 
+	bool isEmpty() const override;
 	void empty() override;
 
 	void print() const override;
 
 	Iterator begin() { return Iterator(head); }
+	Iterator back() { return Iterator(tail); }
 	Iterator end() { return nullptr; }
 
 private:
@@ -242,6 +246,12 @@ void LinkedListD<T>::addAfter(Iterator it, T value)
 		tail = node;
 	}
 	current->next = node;
+}
+
+template <typename T>
+bool LinkedListD<T>::isEmpty() const
+{
+	return head == nullptr;
 }
 
 template <typename T>

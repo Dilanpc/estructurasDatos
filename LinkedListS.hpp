@@ -66,6 +66,7 @@ public:
 	virtual void addBefore(Iterator it, const T& value);
 	virtual void addAfter(Iterator it, const T& value);
 
+	virtual bool isEmpty() const;
 	void empty() override;
 
 	void print() const override;
@@ -225,6 +226,12 @@ void LinkedListS<T>::addAfter(Iterator it, const T& value)
 	Node* node = new Node(value);
 	node->next = it.current->next;
 	it.current->next = node;
+}
+
+template <typename T>
+bool LinkedListS<T>::isEmpty() const
+{
+	return head == nullptr;
 }
 
 template <typename T>
