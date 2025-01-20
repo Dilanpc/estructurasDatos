@@ -136,12 +136,14 @@
     <ClInclude Include="LinkedListS.hpp" />
     <ClInclude Include="LinkedListT.hpp" />
     <ClInclude Include="LinkedListD.hpp" />
+    <ClInclude Include="miscellaneous.hpp" />
     <ClInclude Include="OLinkedListS.hpp" />
     <ClInclude Include="Queue.hpp" />
     <ClInclude Include="SortedList.hpp" />
     <ClInclude Include="Stack.hpp" />
     <ClInclude Include="StaticArray.hpp" />
     <ClInclude Include="testUtils.hpp" />
+    <ClInclude Include="Tree.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
