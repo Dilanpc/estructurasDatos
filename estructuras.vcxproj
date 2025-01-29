@@ -131,6 +131,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AVLTree.hpp" />
     <ClInclude Include="DinamicArray.hpp" />
     <ClInclude Include="IList.hpp" />
     <ClInclude Include="LinkedListS.hpp" />

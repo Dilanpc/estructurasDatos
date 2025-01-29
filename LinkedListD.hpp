@@ -193,6 +193,9 @@ void LinkedListD<T>::erase(const T& element)
 			break;
 		}
 	}
+	if (!toDelete) {
+		throw std::runtime_error("Error: Elemento no encontrado.");
+	}
 	if (toDelete == head) {
 		head = toDelete->next;
 	}
