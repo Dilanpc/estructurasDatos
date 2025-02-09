@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stack>
+
 template <typename T>
 class AVLTree
 {
@@ -12,6 +14,50 @@ class AVLTree
 		Node* right{};
 		T data;
 		unsigned int height = 1;
+	};
+
+	class Iterator // Iter using a stack, left, root, right. Inorder traversal
+	{
+		std::stack<Node*> stack;
+		unsigned int level = 0;
+	public:
+		Iterator(Node* node) {
+			while (node) { // Go to the leftmost node, and save the path in the stack
+				stack.push(node);
+				node = node->left;
+				++level;
+			}
+		}
+		~Iterator() {}
+		Iterator& operator++() {
+			if (stack.empty()) return *this;
+			Node* current = stack.top();
+			stack.pop();
+			--level;
+			if (current->right) { // if has right, go to the leftmost node of the right subtree
+				Node* node = current->right;
+				while (node) {
+					stack.push(node);
+					node = node->left;
+					++level;
+				}
+			}
+			return *this;
+		};
+		T& operator*() { return stack.top()->data; }
+		bool operator==(const Iterator& other) {
+			if (stack.empty() && other.stack.empty()) return true;
+			if (stack.empty() || other.stack.empty()) return false;
+			return stack.top() == other.stack.top();
+		}
+		bool operator!=(const Iterator& other) {
+			if (stack.empty() && other.stack.empty()) return false;
+			if (stack.empty() || other.stack.empty()) return true;
+			return stack.top() != other.stack.top();
+		}
+
+		unsigned int getLevel() const { return level; }
+		Node* getNode() { return stack.top(); }
 	};
 
 	unsigned int getHeight(Node* node) const // Adds protection to the nullptr
@@ -113,6 +159,78 @@ void AVLTree<T>::insert(const T& data)
 }
 
 
+template <typename T>
+void AVLTree<T>::erase(const T& data)
+{
+	if (!root) return;
+	Node* current = root;
+	Node* parent{};
+
+	// Find the node to delete
+	while (true)
+	{
+		if (current->data < data) { // Go right
+			if (current->right == nullptr) return; // Not found
+			if (current->right->data == data) break; // Found
+			parent = current;
+			current = current->right;
+		}
+		else { // Go left
+			if (current->left == nullptr) return; // Not found
+			if (current->left->data == data) break; // Found
+			parent = current;
+			current = current->left;
+		}
+	}
+
+	// Check if the node has one or no children
+	if (!(current->right && current->left)) {
+		simpleErase(parent, current);
+	}
+	else {
+		// Find the previous node
+		Node* prev = current->left;
+		parent = current;
+
+		while (prev->right) {
+			parent = prev;
+			prev = prev->right;
+		}
+
+		current->data = prev->data; // Replace the data
+		simpleErase(parent, prev);
+	}
+}
+
+// To delete a node that have one or no children
+template <typename T>
+void AVLTree<T>::simpleErase(Node* parent, Node* node)
+{
+	if (parent->right == node) // Check if the node is the left or right child of the parent
+	{
+		if (node->left == nullptr) // If the node has no left child
+		{
+			parent->right = node->right;
+		}
+		else // If the node has no right child
+		{
+			parent->right = node->left;
+		}
+	}
+	else
+	{
+		if (node->left == nullptr) // If the node has no left child
+		{
+			parent->left = node->right;
+		}
+		else // If the node has no right child
+		{
+			parent->left = node->left;
+		}
+	}
+
+	operator delete(node); // Delete withou calling the destructor to avoid deleting the children
+}
 
 
 // Verify if the given node is balanced by mesuaring the height of the subtrees

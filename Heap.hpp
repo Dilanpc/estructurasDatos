@@ -26,7 +26,9 @@ public:
 	T getMax() const;
 	void pop(); // remove higher element
 
-	void erease(const T& data); // remove element
+	bool isEmpty() const { return m_back == m_arr; }
+
+	void erase(const T& data); // remove element
 
 private:
 	static void siftup(size_t index, T* arr);
@@ -37,8 +39,9 @@ private:
 public:
 	void print() const;
 
-	static Heap<T>* makeHeap(T* arr, size_t size); // for i [n/2, 0] siftDown(i)
+	static Heap<T>* makeHeap(T* arr, size_t size);
 	static T* heapSort(T* arr, size_t size);
+
 };
 
 
@@ -82,7 +85,7 @@ void Heap<T>::pop()
 }
 
 template <typename T>
-void Heap<T>::erease(const T& data)
+void Heap<T>::erase(const T& data)
 {
 	// find the index of the element
 	size_t size = m_back - m_arr;
@@ -181,6 +184,8 @@ void Heap<T>::print() const
 	}
 }
 
+
+// The array must be full and dynimically allocated, the heap will take the ownership of the array
 template <typename T>
 Heap<T>* Heap<T>::makeHeap(T* arr, size_t size)
 {

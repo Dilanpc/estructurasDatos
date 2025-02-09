@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="AVLTree.hpp" />
     <ClInclude Include="DinamicArray.hpp" />
+    <ClInclude Include="Heap.hpp" />
     <ClInclude Include="IList.hpp" />
     <ClInclude Include="LinkedListS.hpp" />
     <ClInclude Include="LinkedListT.hpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="miscellaneous.hpp" />
     <ClInclude Include="OLinkedListS.hpp" />
     <ClInclude Include="Queue.hpp" />
+    <ClInclude Include="DisjunctSets.hpp" />
     <ClInclude Include="SortedList.hpp" />
     <ClInclude Include="Stack.hpp" />
     <ClInclude Include="StaticArray.hpp" />
