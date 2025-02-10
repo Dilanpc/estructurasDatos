@@ -20,6 +20,7 @@ private:
 		T data;
 	};
 
+public:
 	class Iterator // Iter using a stack, left, root, right. Inorder traversal
 	{
 		std::stack<Node*> stack;
@@ -117,7 +118,6 @@ Tree<T>::Node::~Node() // Usign recursion
 {
 	delete left;
 	delete right;
-	std::cout << "Deleted: " << data << '\n';
 }
 
 template<typename T>

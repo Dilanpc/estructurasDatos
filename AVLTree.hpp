@@ -2,6 +2,7 @@
 
 #include <stack>
 
+// Do not add duplicate values
 template <typename T>
 class AVLTree
 {
@@ -86,6 +87,9 @@ public:
 	Node* rotleft(Node* root);
 	Node* rotright(Node* root);
 
+	size_t getSize() const { return getSize(root); }
+	size_t getSize(Node* root) const;
+
 	void print() const { print(root); }
 
 
@@ -98,7 +102,6 @@ private:
 
 
 };
-
 
 
 
@@ -320,6 +323,14 @@ typename AVLTree<T>::Node* AVLTree<T>::rotright(Node* root)
 	adjustHeight(newRoot);
 
 	return newRoot;
+}
+
+
+template <typename T>
+size_t AVLTree<T>::getSize(Node* root) const
+{
+	if (root == nullptr) return 0;
+	return 1 + getSize(root->left) + getSize(root->right);
 }
 
 

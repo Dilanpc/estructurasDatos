@@ -20,7 +20,7 @@ class DisjunctSets
 	size_t m_size;
 
 public:
-	DisjunctSets(int* arr, size_t size);
+	DisjunctSets(const int const* arr, size_t size);
 	~DisjunctSets();
 
 	size_t find(size_t index);
@@ -31,7 +31,7 @@ public:
 
 
 
-DisjunctSets::DisjunctSets(int* arr, size_t size)
+DisjunctSets::DisjunctSets(const int const* arr, size_t size)
 {
 	m_size = size;
 	m_arr = static_cast<Node*>(operator new(sizeof(Node) * size)); // Reserve memory for the array of Nodes
