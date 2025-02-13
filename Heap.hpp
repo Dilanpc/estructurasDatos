@@ -9,37 +9,58 @@ How to move through the tree:
 	To go up, divide the index by 2, if there is a remainder, that means it is the right child.
 */
 
-
 template <typename T>
 class Heap
+{
+public:
+
+
+	virtual void insert(const T& data) = 0;
+	virtual T top() const = 0;
+	virtual void pop() = 0;
+	virtual bool isEmpty() const = 0;
+	virtual void erase(const T& data) = 0;
+
+	virtual void siftup(size_t index) = 0;
+	virtual void siftdown(size_t index) = 0;
+
+	virtual void print() const = 0;
+
+
+
+};
+
+
+template <typename T>
+class MaxHeap : public Heap<T>
 {
 	T* m_arr;
 	T* m_back;
 	T* m_end;
 
 public:
-	Heap(size_t size);
-	~Heap();
+	MaxHeap(size_t size);
+	~MaxHeap();
 
-	void insert(const T& data);
+	void insert(const T& data) override;
 
-	T getMax() const;
-	void pop(); // remove higher element
+	inline T top() const override;
+	void pop() override; // remove higher element
 
-	bool isEmpty() const { return m_back == m_arr; }
+	bool isEmpty() const override { return m_back == m_arr; }
 
-	void erase(const T& data); // remove element
+	void erase(const T& data) override; // remove element
 
 private:
 	static void siftup(size_t index, T* arr);
 	static void siftdown(size_t index, T* arr, size_t size);
-	void siftup(size_t index);
-	void siftdown(size_t index);
+	inline void siftup(size_t index) override;
+	inline void siftdown(size_t index) override;
 
 public:
-	void print() const;
+	void print() const override;
 
-	static Heap<T>* makeHeap(T* arr, size_t size);
+	static MaxHeap<T>* makeHeap(T* arr, size_t size);
 	static T* heapSort(T* arr, size_t size);
 
 };
@@ -47,7 +68,7 @@ public:
 
 
 template <typename T>
-Heap<T>::Heap(size_t size)
+MaxHeap<T>::MaxHeap(size_t size)
 {
 	m_arr = new T[size];
 	m_back = m_arr;
@@ -56,13 +77,13 @@ Heap<T>::Heap(size_t size)
 
 
 template <typename T>
-Heap<T>::~Heap()
+MaxHeap<T>::~MaxHeap()
 {
 	delete[] m_arr;
 }
 
 template <typename T>
-void Heap<T>::insert(const T& data)
+void MaxHeap<T>::insert(const T& data)
 {
 	if (m_back == m_end) throw std::runtime_error("Heap lleno");
 	*m_back = data;
@@ -71,13 +92,13 @@ void Heap<T>::insert(const T& data)
 }
 
 template <typename T>
-T Heap<T>::getMax() const
+T MaxHeap<T>::top() const
 {
 	return *m_arr;
 }
 
 template <typename T>
-void Heap<T>::pop()
+void MaxHeap<T>::pop()
 {
 	// Swamp with the last
 	*m_arr = *(--m_back);
@@ -85,7 +106,7 @@ void Heap<T>::pop()
 }
 
 template <typename T>
-void Heap<T>::erase(const T& data)
+void MaxHeap<T>::erase(const T& data)
 {
 	// find the index of the element
 	size_t size = m_back - m_arr;
@@ -103,7 +124,7 @@ void Heap<T>::erase(const T& data)
 }
 
 template <typename T>
-void Heap<T>::siftup(size_t index, T* arr)
+void MaxHeap<T>::siftup(size_t index, T* arr)
 {
 	if (index == 0) return;
 
@@ -120,7 +141,7 @@ void Heap<T>::siftup(size_t index, T* arr)
 }
 
 template <typename T>
-void Heap<T>::siftdown(size_t index, T* arr, size_t size)
+void MaxHeap<T>::siftdown(size_t index, T* arr, size_t size)
 {
 	size_t left = index * 2;
 	size_t right = index * 2 + 1;
@@ -140,23 +161,22 @@ void Heap<T>::siftdown(size_t index, T* arr, size_t size)
 }
 
 template <typename T>
-void Heap<T>::siftup(size_t index)
+void MaxHeap<T>::siftup(size_t index)
 {
 	siftup(index, m_arr);
 }
 
 template <typename T>
-void Heap<T>::siftdown(size_t index)
+void MaxHeap<T>::siftdown(size_t index)
 {
 	siftdown(index, m_arr, m_back - m_arr);
 }
 
 template <typename T>
-void Heap<T>::print() const
+void MaxHeap<T>::print() const
 {
 	size_t index = 1; // Using index from [1, size]
 	size_t size = m_back - m_arr;
-	size_t capacity = m_end - m_arr;
 	size_t iter = 0;
 
 	int spaces = 0;
@@ -187,9 +207,9 @@ void Heap<T>::print() const
 
 // The array must be full and dynimically allocated, the heap will take the ownership of the array
 template <typename T>
-Heap<T>* Heap<T>::makeHeap(T* arr, size_t size)
+MaxHeap<T>* MaxHeap<T>::makeHeap(T* arr, size_t size)
 {
-	Heap<T>* heap = new Heap<T>(0);
+	MaxHeap<T>* heap = new MaxHeap<T>(0);
 	delete heap->m_arr; // Delete the array created in the constructor, we will use the one passed as argument
 
 	heap->m_arr = arr;
@@ -207,7 +227,7 @@ Heap<T>* Heap<T>::makeHeap(T* arr, size_t size)
 }
 
 template <typename T>
-T* Heap<T>::heapSort(T* arr, size_t size)
+T* MaxHeap<T>::heapSort(T* arr, size_t size)
 {
 	for (size_t i = size / 2; i > 0; --i)
 	{
@@ -215,4 +235,178 @@ T* Heap<T>::heapSort(T* arr, size_t size)
 	}
 	siftdown(0, arr, size);
 	return arr;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////
+
+template <typename T>
+class MinHeap : public Heap<T>
+{
+	T* m_arr;
+	T* m_back;
+	T* m_end;
+
+
+public:
+	MinHeap(size_t size);
+	~MinHeap();
+
+	void insert(const T& data) override;
+	inline T top() const override;
+	void pop() override; // remove higher element
+	bool isEmpty() const override { return m_back == m_arr; }
+	void erase(const T& data) override; // remove element
+
+	static void siftup(size_t index, T* arr);
+	static void siftdown(size_t index, T* arr, size_t size);
+	inline void siftup(size_t index) override;
+	inline void siftdown(size_t index) override;
+
+	void print() const override;
+
+};
+
+
+
+
+
+template <typename T>
+MinHeap<T>::MinHeap(size_t size)
+{
+	m_arr = new T[size];
+	m_back = m_arr;
+	m_end = m_arr + size;
+}
+
+template <typename T>
+MinHeap<T>::~MinHeap()
+{
+	delete[] m_arr;
+}
+
+template <typename T>
+void MinHeap<T>::insert(const T& data)
+{
+	if (m_back == m_end) throw std::runtime_error("Heap lleno");
+	*m_back = data;
+	++m_back;
+	siftup(m_back - m_arr - 1);
+}
+
+template <typename T>
+T MinHeap<T>::top() const
+{
+	return *m_arr;
+}
+
+template <typename T>
+void MinHeap<T>::pop()
+{
+	// Swamp with the last
+	*m_arr = *(--m_back);
+	siftdown(0);
+}
+
+template <typename T>
+void MinHeap<T>::erase(const T& data)
+{
+	// find the index of the element
+	size_t size = m_back - m_arr;
+	for (size_t i = 0; i < size; ++i)
+	{
+		if (m_arr[i] == data)
+		{
+			// Swamp with the last, and also decrese the limit
+			m_arr[i] = *(--m_back);
+			siftdown(i);
+			return;
+		}
+	}
+	// If the element is not found, do nothing
+}
+
+
+template <typename T>
+void MinHeap<T>::siftup(size_t index, T* arr)
+{
+	if (index == 0) return;
+	// Compare with parent
+	T* parent = arr + index / 2;
+	T* current = arr + index;
+	if (*parent > *current) // swamp
+	{
+		T temp = *parent;
+		*parent = *current;
+		*current = temp;
+		siftup(index / 2, arr); // siftup the parent
+	}
+}
+
+template <typename T>
+void MinHeap<T>::siftdown(size_t index, T* arr, size_t size)
+{
+	size_t left = index * 2;
+	size_t right = index * 2 + 1;
+	if (left >= size) return; // No children
+	size_t min = index;
+	if (arr[left] < arr[min]) min = left;
+	if (right < size && arr[right] < arr[min]) min = right;
+	if (min != index) { // Swamp, if necesary
+		T temp = arr[index];
+		arr[index] = arr[min];
+		arr[min] = temp;
+		siftdown(min, arr, size);
+	}
+}
+
+template <typename T>
+void MinHeap<T>::siftup(size_t index)
+{
+	siftup(index, m_arr);
+}
+
+template <typename T>
+void MinHeap<T>::siftdown(size_t index)
+{
+	siftdown(index, m_arr, m_back - m_arr);
+}
+
+template <typename T>
+void MinHeap<T>::print() const
+{
+	size_t index = 1; // Using index from [1, size]
+	size_t size = m_back - m_arr;
+	size_t iter = 0;
+	int spaces = 0;
+	
+	while (iter < size) {
+		for (int i = 0; i < spaces; ++i) std::cout << ' ' << '|';
+		std::cout << m_arr[index - 1] << '\n';
+		if (index * 2 > size) { // has no left
+			// Return to the parent from a left child, a left child is exacly the double of the parent
+			// if we enter from the left child, means right child haven't been printed
+			while (index % 2 != 0 || index + 1 > size) {
+				index /= 2;
+				spaces -= 1;
+			}
+			// Acces to the right child
+			++index;
+		}
+		else {
+			index *= 2;
+			spaces += 1;
+		}
+		++iter;
+	}
 }

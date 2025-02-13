@@ -65,6 +65,48 @@ public:
 		Node* getNode() { return stack.top(); }
 	};
 
+	class PostOrderIter // Iter using a stack, left, right, root. Postorder traversal
+	{
+		std::stack<Node*> stack;
+
+		void addToStack(Node* node) {
+			if (!node) return;
+			stack.push(node);
+			addToStack(node->right);
+			addToStack(node->left);
+
+		}
+
+	public:
+		PostOrderIter(Node* node) {
+			addToStack(node);
+		}
+
+		~PostOrderIter() {}
+
+		PostOrderIter& operator++() {
+			if (stack.empty()) return *this;
+			stack.pop();
+		};
+
+		T& operator*() { return stack.top()->data; }
+
+		bool operator==(const PostOrderIter& other) {
+			if (stack.empty() && other.stack.empty()) return true;
+			if (stack.empty() || other.stack.empty()) return false;
+			return stack.top() == other.stack.top();
+		}
+
+		bool operator!=(const PostOrderIter& other) {
+			if (stack.empty() && other.stack.empty()) return false;
+			if (stack.empty() || other.stack.empty()) return true;
+			return stack.top() != other.stack.top();
+		}
+
+	};
+
+
+
 public:
 	Tree();
 	Tree(const T& data);
@@ -100,6 +142,9 @@ public:
 
 	Iterator begin() const { return Iterator(root); }
 	Iterator end() const { return Iterator(nullptr); }
+
+	PostOrderIter postOrderBegin() const { return PostOrderIter(root); }
+	PostOrderIter postOrderEnd() const { return PostOrderIter(nullptr); }
 
 private:
 
