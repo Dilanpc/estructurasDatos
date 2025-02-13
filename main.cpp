@@ -1,42 +1,37 @@
 #include <iostream>
+#include "DisjunctSets.hpp"
 
-#include "Tree.hpp"
-#include "AVLTree.hpp"
-
-#include <random>
-int randint(int min, int max)
+void dsu()
 {
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dist(min, max);
-	return dist(gen);
+	unsigned int N, Q;
+	std::cin >> N >> Q;
+
+	DisjunctSetsPC set(N);
+
+	for (unsigned int i = 0; i < Q; ++i)
+	{
+		bool query;
+		unsigned int u, v;
+
+		std::cin >> query >> u >> v;
+
+		if (query) // Is in the same commponent?
+		{
+			std::cout << set.isSameSet(u, v) << '\n';
+		}
+		else
+		{
+			set.join(u, v);
+		}
+	}
+
 }
-
-#define T int
-
 
 
 int main(int argc, const char* argv[])
 {
 	std::ios_base::sync_with_stdio(false);
 
-	
-	//Tree<T> tree;
-	AVLTree<T> balancedTree;
-	for (int i = 0; i < 10; ++i)
-	{
-		balancedTree.insert(i);
-		balancedTree.print();
-		std::cout << "\n---\n";
-	}
-	
-	balancedTree.print();
-	
-	std::cout << '\n';
-
-	//balancedTree.erase(105);
-	//balancedTree.erase(75);
-
-	std::cout << "---------------\n";
+	dsu();
 	
 }
