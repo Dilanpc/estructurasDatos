@@ -1,42 +1,54 @@
 #include <iostream>
+#include "Heap.hpp"
 
-#include "Tree.hpp"
-#include "AVLTree.hpp"
 
-#include <random>
-int randint(int min, int max)
+
+
+int sweet()
 {
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dist(min, max);
-	return dist(gen);
+	int size;
+	std::cin >> size;
+
+	MinHeap<int> heap(size);
+
+	int k;
+	std::cin >> k;
+
+	for (int i = 0; i < size; ++i)
+	{
+		int data;
+		std::cin >> data;
+		heap.insert(data);
+	}
+
+
+	int iter = 0;
+
+	while (true)
+	{
+		if (heap.top() >= k) {
+			return iter;
+		}
+		int a = heap.top();
+		heap.pop();
+
+		if (heap.isEmpty()) {
+			return -1;
+		}
+		int b = heap.top();
+		heap.pop();
+
+		int result = a + 2 * b;
+		heap.insert(result);
+
+		++iter;
+	}
 }
-
-#define T int
-
 
 
 int main(int argc, const char* argv[])
 {
 	std::ios_base::sync_with_stdio(false);
 
-	
-	//Tree<T> tree;
-	AVLTree<T> balancedTree;
-	for (int i = 0; i < 10; ++i)
-	{
-		balancedTree.insert(i);
-		balancedTree.print();
-		std::cout << "\n---\n";
-	}
-	
-	balancedTree.print();
-	
-	std::cout << '\n';
-
-	//balancedTree.erase(105);
-	//balancedTree.erase(75);
-
-	std::cout << "---------------\n";
-	
+	std::cout << sweet() << std::endl;
 }
