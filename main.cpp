@@ -1,18 +1,68 @@
 #include <iostream>
 
-#include "Tree.hpp"
-#include "AVLTree.hpp"
 
-#include <random>
-int randint(int min, int max)
+
+struct Orders
 {
-	static std::random_device rd;
-	static std::mt19937 gen(rd());
-	std::uniform_int_distribution<int> dist(min, max);
-	return dist(gen);
+	unsigned int* preorder{};
+	unsigned int* inoPos{}; // Acces by value-1 = preorder[i] - 1
+	~Orders() {
+		delete[] preorder;
+		delete[] inoPos;
+	}
+};
+
+
+Orders* readOrders(unsigned int size)
+{
+	Orders* orders = new Orders;
+	orders->preorder = new unsigned int[size];
+	orders->inoPos = new unsigned int[size];
+
+	for (unsigned int i = 0; i < size; ++i) // Reading preorder
+	{
+		std::cin >> orders->preorder[i]; // Save preorder in the giving order
+	}
+	
+	for (unsigned int i = 0; i < size; ++i) // Reading inorder
+	{
+		unsigned int data;
+		std::cin >> data;
+		orders->inoPos[data - 1] = i;
+	}
+	return orders;
 }
 
-#define T int
+
+void postorder(unsigned int left, unsigned int right, const Orders& orders, unsigned int& i)
+{
+	// left and right, limits in inorder list, are inlusive [left, right]
+
+	// i =: current position in preorder
+
+	if (left > right) // Base case, not existent subtree
+		return;
+	
+	// Save the current root, it will be printed after its subtrees
+	unsigned int current = orders.preorder[i];
+
+	// Find the current root in inorder to divide it
+	unsigned int inoIndex = orders.inoPos[current - 1]; // access by value - 1
+	++i; // Search for the next in preorder, in the next calls
+
+	// Base case
+ 	if (left != right) // is not a leaf
+	{
+		if (inoIndex != 0) // Necessary to avoid 0 - 1 = 4294967295
+			postorder(left, inoIndex - 1, orders, i); // Left subtree
+		postorder(inoIndex + 1, right, orders, i); // Right subtree
+	}
+
+
+	std::cout << current << ' ';
+	
+}
+
 
 
 
@@ -20,23 +70,13 @@ int main(int argc, const char* argv[])
 {
 	std::ios_base::sync_with_stdio(false);
 
-	
-	//Tree<T> tree;
-	AVLTree<T> balancedTree;
-	for (int i = 0; i < 10; ++i)
-	{
-		balancedTree.insert(i);
-		balancedTree.print();
-		std::cout << "\n---\n";
-	}
-	
-	balancedTree.print();
-	
-	std::cout << '\n';
+	unsigned int size;
+	std::cin >> size;
 
-	//balancedTree.erase(105);
-	//balancedTree.erase(75);
+	Orders* orders = readOrders(size);
 
-	std::cout << "---------------\n";
-	
+	unsigned int i = 0;
+	postorder(0, size - 1, *orders, i);
+
+	delete orders;
 }
