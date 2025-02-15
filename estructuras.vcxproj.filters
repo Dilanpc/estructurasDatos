@@ -13,63 +13,69 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Lineal">
+      <UniqueIdentifier>{ad6ff844-d13c-4b0d-8e3a-aadac9adf42b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NoLineal">
+      <UniqueIdentifier>{f59cb8b1-7ddc-4513-9c42-35ecf37eeaed}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="CircularArray.hpp">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Lineal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="StaticArray.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedListS.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Stack.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedListD.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="IList.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedListT.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Queue.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="DinamicArray.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="SortedList.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="OLinkedListS.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="testUtils.hpp">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="miscellaneous.hpp">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="Tree.hpp">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="DinamicArray.hpp">
+      <Filter>Lineal</Filter>
     </ClInclude>
-    <ClInclude Include="AVLTree.hpp">
-      <Filter>Archivos de encabezado</Filter>
+    <ClInclude Include="IList.hpp">
+      <Filter>Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedListD.hpp">
+      <Filter>Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedListS.hpp">
+      <Filter>Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedListT.hpp">
+      <Filter>Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.hpp">
+      <Filter>Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.hpp">
+      <Filter>Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticArray.hpp">
+      <Filter>Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="SortedList.hpp">
+      <Filter>Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree.hpp">
+      <Filter>NoLineal</Filter>
+    </ClInclude>
+    <ClInclude Include="OLinkedListS.hpp">
+      <Filter>Lineal</Filter>
     </ClInclude>
     <ClInclude Include="Heap.hpp">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>NoLineal</Filter>
     </ClInclude>
     <ClInclude Include="DisjunctSets.hpp">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>NoLineal</Filter>
+    </ClInclude>
+    <ClInclude Include="AVLTree.hpp">
+      <Filter>NoLineal</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
