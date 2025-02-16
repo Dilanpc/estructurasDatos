@@ -2,48 +2,76 @@
 #include <vector>
 
 
-class Tree;
-
 class Node
 {
 public:
-	std::vector<unsigned int> children; // Index of children nodes
-
+	std::vector<Node*> children; // Index of children nodes, it also can point to the parent
 	unsigned int height = 0;
-	unsigned int diameter = 0; // longest path between two nodes that GOES THROUGH this node
+
+	static unsigned int diameter; // Longest path between two nodes, it is calculated in calcHeights
 
 	// Calculate height and diameter of the node and all its children, use when the tree will not be modified
-	void calculate(Tree& tree);
+	// it is calculated considering the current node as the root of a subtree
+	void calculate(Node* parent);
 	
 };
 
+unsigned int Node::diameter = 0;
 
-class Tree
+
+
+
+
+
+
+
+
+
+void Node::calculate(Node* parent)
 {
-public:
-	Tree(unsigned int n) : nodes(n) {}
-	std::vector<Node> nodes;
+	if (height != 0) // Already calculated
+		return;
 
-	unsigned int diametre = 0; // Longest path between two nodes, it is calculated in calcHeights and calcule of each node
+	// Two highest heights of children
+	unsigned int maxHeightOne = 0;
+	unsigned int maxHeightTwo = 0;
 
-	void calcHeights()
+	for (Node* child : children)
 	{
-		for (Node& node : nodes)
+		if (child == parent) // Parent, skip to avoid returning to the parent and infinite loop
+			continue;
+
+		child->calculate(this);
+		if (child->height > maxHeightOne)
 		{
-			node.calculate(*this);
+			maxHeightTwo = maxHeightOne;
+			maxHeightOne = child->height;
+		}
+		else if (child->height > maxHeightTwo)
+		{
+			maxHeightTwo = child->height;
 		}
 	}
-};
+	height = maxHeightOne + 1;
 
+	// Largets path that goes through this node:
+	// sum of the two highest heights of children
 
+	diameter = std::max(diameter, maxHeightOne + maxHeightTwo);
+
+}
 
 
 unsigned int maxDiameter(unsigned int n)
 {
-	Tree tree(n);
+	if (n == 1 || n == 0)
+		return 0;
+
+	std::vector<Node> nodes(n);
+
 
 	// Read tree
-	for (unsigned int i = 0; i < n - 1; i++)
+	for (unsigned int i = 0; i < n - 1; ++i)
 	{
 		unsigned int a, b;
 		std::cin >> a >> b;
@@ -51,46 +79,16 @@ unsigned int maxDiameter(unsigned int n)
 		--a;
 		--b;
 
-		tree.nodes[a].children.push_back(b);
+		nodes[a].children.push_back(&nodes[b]);
+		nodes[b].children.push_back(&nodes[a]);
 	}
 
-	tree.calcHeights();
+	nodes[0].calculate(&nodes[0]);
+	
+	return Node::diameter;
 
-	return tree.diametre;
+	throw std::runtime_error("No root found");
 }
-
-
-void Node::calculate(Tree& tree)
-{
-	if (height != 0) // Already calculated
-		return;
-
-	std::vector<Node>& nodes = tree.nodes;
-	height = 1;
-	for (unsigned int childIndex : children)
-	{
-		nodes[childIndex].calculate(tree);
-		height = std::max(height, nodes[childIndex].height + 1);
-	}
-
-	// Calculate diameter
-	if (children.size() == 1) // if there is only one child, the diameter is the height of the child
-	{
-		diameter = nodes[children[0]].height;
-	}
-	for (unsigned int i = 0; i < children.size(); i++) // Find the highest 
-	{
-		for (unsigned int j = i + 1; j < children.size(); j++) // Find the second highest
-		{
-			diameter = std::max(diameter, nodes[children[i]].height + nodes[children[j]].height);
-		}
-	}
-
-	tree.diametre = std::max(tree.diametre, diameter);
-
-}
-
-
 
 
 
@@ -98,6 +96,8 @@ void Node::calculate(Tree& tree)
 int main(int argc, const char* argv[])
 {
 	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(nullptr);
+
 
 	unsigned int n;
 	std::cin >> n;
