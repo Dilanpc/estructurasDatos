@@ -494,6 +494,9 @@ unsigned int Tree<T>::getSize(const Tree<T>::Node* node)
 {
 	if (node == nullptr)
 		return 0;
+	// If it is a leaf
+	if (node->left == nullptr && node->right == nullptr)
+		return 1;
 	return 1 + getSize(node->left) + getSize(node->right);
 }
 
