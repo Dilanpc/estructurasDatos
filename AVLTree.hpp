@@ -209,7 +209,18 @@ void AVLTree<T>::erase(const T& data)
 template <typename T>
 void AVLTree<T>::simpleErase(Node* parent, Node* node)
 {
-	if (parent->right == node) // Check if the node is the left or right child of the parent
+	if (parent == nullptr) // Is the root
+	{
+		if (root->left == nullptr) // If the node has no left child
+		{
+			root = node->right;
+		}
+		else // If the node has no right child
+		{
+			root = node->left;
+		}
+	}
+	else if (parent->right == node) // Check if the node is the left or right child of the parent
 	{
 		if (node->left == nullptr) // If the node has no left child
 		{
@@ -330,6 +341,8 @@ template <typename T>
 size_t AVLTree<T>::getSize(Node* root) const
 {
 	if (root == nullptr) return 0;
+	// Verify if is a leaf
+	if (root->left == nullptr && root->right == nullptr) return 1;
 	return 1 + getSize(root->left) + getSize(root->right);
 }
 
