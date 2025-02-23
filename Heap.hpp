@@ -9,6 +9,8 @@ How to move through the tree:
 	To go up, divide the index by 2, if there is a remainder, that means it is the right child.
 */
 
+
+
 template <typename T>
 class Heap
 {
@@ -410,3 +412,174 @@ void MinHeap<T>::print() const
 		++iter;
 	}
 }
+
+
+////////////////////////////////////////////////////////
+
+template <typename T, unsigned int childrenNum>
+class HeapArray : public Heap<T>
+{
+	T* m_arr;
+	T* m_back;
+	T* m_end;
+
+
+public:
+	HeapArray(size_t size);
+	~HeapArray();
+	void insert(const T& data) override;
+	inline T top() const override;
+	void pop() override; // remove higher element
+	bool isEmpty() const override { return m_back == 0; }
+	void erase(const T& data) override; // remove element
+	static void siftup(size_t index, T* arr);
+	static void siftdown(size_t index, T* arr, size_t size);
+	inline void siftup(size_t index) override;
+	inline void siftdown(size_t index) override;
+	void print() const override;
+};
+
+
+template <typename T, unsigned int childrenNum>
+HeapArray<T, childrenNum>::HeapArray(size_t size)
+{
+	m_arr = new T[size];
+	m_back = m_arr;
+	m_end = m_arr + size;
+}
+
+template <typename T, unsigned int childrenNum>
+HeapArray<T, childrenNum>::~HeapArray()
+{
+	delete[] m_arr;
+}
+
+template <typename T, unsigned int childrenNum>
+void HeapArray<T, childrenNum>::insert(const T& data)
+{
+	if (m_back == m_end) throw std::runtime_error("Heap lleno");
+	*m_back = data;
+	++m_back;
+	siftup(m_back - m_arr - 1);
+}
+
+template <typename T, unsigned int childrenNum>
+T HeapArray<T, childrenNum>::top() const
+{
+	return *m_arr;
+}
+
+template <typename T, unsigned int childrenNum>
+void HeapArray<T, childrenNum>::pop()
+{
+	// Swamp with the last
+	*m_arr = *(--m_back);
+	siftdown(0);
+}
+
+template <typename T, unsigned int childrenNum>
+void HeapArray<T, childrenNum>::erase(const T& data)
+{
+	// find the index of the element
+	size_t size = m_back - m_arr;
+	for (size_t i = 0; i < size; ++i)
+	{
+		if (m_arr[i] == data)
+		{
+			// Swamp with the last, and also decrese the limit
+			m_arr[i] = *(--m_back);
+			siftdown(i);
+			return;
+		}
+	}
+	// If the element is not found, do nothing
+}
+
+template <typename T, unsigned int childrenNum>
+void HeapArray<T, childrenNum>::siftup(size_t index, T* arr)
+{
+	if (index == 0) return;
+	// Compare with parent
+	T* parent = arr + index / childrenNum;
+	T* current = arr + index;
+	if (*parent > *current) // swamp
+	{
+		T temp = *parent;
+		*parent = *current;
+		*current = temp;
+		siftup(index / childrenNum, arr); // siftup the parent
+	}
+}
+
+template <typename T, unsigned int childrenNum>
+void HeapArray<T, childrenNum>::siftdown(size_t index, T* arr, size_t size)
+{
+	if (index * childrenNum >= size) return; // No children
+	size_t children[childrenNum];
+	for (size_t i = 0; i < childrenNum; ++i)
+	{
+		children[i] = index * childrenNum + i;
+	}
+
+	// Find the minimum
+	size_t min = index;
+	for (size_t i = 0; i < childrenNum; ++i)
+	{
+		
+		if (children[i] < size) // If the child exists
+		{
+			if (arr[children[i]] < arr[min]) min = children[i];
+		}
+		else break; // No more children
+	}
+
+	if (min != index) { // Swamp, if necesary
+		T temp = arr[index];
+		arr[index] = arr[min];
+		arr[min] = temp;
+		siftdown(min, arr, size);
+	}
+
+}
+
+template <typename T, unsigned int childrenNum>
+void HeapArray<T, childrenNum>::siftup(size_t index)
+{
+	siftup(index, m_arr);
+}
+
+template <typename T, unsigned int childrenNum>
+void HeapArray<T, childrenNum>::siftdown(size_t index)
+{
+	siftdown(index, m_arr, m_back - m_arr);
+}
+
+template <typename T, unsigned int childrenNum>
+void HeapArray<T, childrenNum>::print() const
+{
+	size_t index = 1; // Using index from [1, size]
+	size_t size = m_back - m_arr;
+	size_t iter = 0;
+	int spaces = 0;
+	while (iter < size) {
+		for (int i = 0; i < spaces; ++i) std::cout << ' ' << '|';
+		std::cout << m_arr[index - 1] << '\n';
+			if (index * childrenNum > size) { // has no left
+				// Return to the parent from a left child, a left child is exacly the double of the parent
+				// if we enter from the left child, means right child haven't been printed
+				while (index % childrenNum != 0 || index + 1 > size) {
+					index /= childrenNum;
+					spaces -= 1;
+				}
+				// Acces to the right child
+				++index;
+			}
+			else {
+				index *= childrenNum;
+				spaces += 1;
+			}
+		++iter;
+	}
+}
+
+
