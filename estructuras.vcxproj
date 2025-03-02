@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="AVLTree.hpp" />
     <ClInclude Include="DinamicArray.hpp" />
+    <ClInclude Include="Hash.hpp" />
     <ClInclude Include="Heap.hpp" />
     <ClInclude Include="IList.hpp" />
     <ClInclude Include="LinkedListS.hpp" />
