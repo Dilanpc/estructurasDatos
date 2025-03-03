@@ -13,59 +13,26 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Archivos de encabezado\Lineal">
+      <UniqueIdentifier>{bcfc788a-de38-48be-b2da-21de7c48f860}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de encabezado\Trees">
+      <UniqueIdentifier>{6f1dc9a5-2e80-491d-9318-fee84babf8dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
     <ClCompile Include="CircularArray.hpp">
-      <Filter>Archivos de encabezado</Filter>
+      <Filter>Archivos de encabezado\Lineal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="StaticArray.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedListS.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Stack.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedListD.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="IList.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedListT.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Queue.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="DinamicArray.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="SortedList.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="OLinkedListS.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
     <ClInclude Include="testUtils.hpp">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="miscellaneous.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Tree.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="AVLTree.hpp">
-      <Filter>Archivos de encabezado</Filter>
-    </ClInclude>
-    <ClInclude Include="Heap.hpp">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="DisjunctSets.hpp">
@@ -73,6 +40,45 @@
     </ClInclude>
     <ClInclude Include="Hash.hpp">
       <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="DinamicArray.hpp">
+      <Filter>Archivos de encabezado\Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="IList.hpp">
+      <Filter>Archivos de encabezado\Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedListD.hpp">
+      <Filter>Archivos de encabezado\Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedListS.hpp">
+      <Filter>Archivos de encabezado\Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedListT.hpp">
+      <Filter>Archivos de encabezado\Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="OLinkedListS.hpp">
+      <Filter>Archivos de encabezado\Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="SortedList.hpp">
+      <Filter>Archivos de encabezado\Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.hpp">
+      <Filter>Archivos de encabezado\Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.hpp">
+      <Filter>Archivos de encabezado\Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticArray.hpp">
+      <Filter>Archivos de encabezado\Lineal</Filter>
+    </ClInclude>
+    <ClInclude Include="AVLTree.hpp">
+      <Filter>Archivos de encabezado\Trees</Filter>
+    </ClInclude>
+    <ClInclude Include="Tree.hpp">
+      <Filter>Archivos de encabezado\Trees</Filter>
+    </ClInclude>
+    <ClInclude Include="Heap.hpp">
+      <Filter>Archivos de encabezado\Trees</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

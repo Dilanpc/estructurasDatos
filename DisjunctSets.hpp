@@ -9,10 +9,8 @@ class DisjunctSets
 	struct Node
 	{
 		size_t parent;
-		size_t data;
 		unsigned int rank = 0;
-		Node(const int& data) : data(data), parent(data) {}
-		bool isRoot() const { return parent == data; }
+		Node(const int& index) : parent(index) {}
 	};
 
 
@@ -54,7 +52,7 @@ DisjunctSets::~DisjunctSets()
 
 size_t DisjunctSets::find(size_t index)
 {	
-	while (!m_arr[index].isRoot())
+	while (m_arr[index].parent != index)
 	{
 		index = m_arr[index].parent;
 	}
@@ -93,7 +91,7 @@ void DisjunctSets::print() const
 {
 	for (size_t i = 0; i < m_size; ++i)
 	{
-		std::cout << m_arr[i].data << " ";
+		std::cout << i << " ";
 	}
 	std::cout << '\n';
 
@@ -122,9 +120,7 @@ class DisjunctSetsPC
 	struct Node
 	{
 		size_t parent;
-		size_t data;
-		Node(const int& data) : data(data), parent(data) {} // At the beginning, each element is root
-		bool isRoot() const { return parent == data; }
+		Node(const int& index) : parent(index) {} // At the beginning, each element is root
 	};
 
 	Node* m_arr;
@@ -165,7 +161,7 @@ DisjunctSetsPC::~DisjunctSetsPC()
 
 size_t DisjunctSetsPC::find(size_t index)
 {
-	if (m_arr[index].isRoot())
+	if (m_arr[index].parent == index) // Is the root
 		return index;
 	// Path compression
 	size_t root = find(m_arr[index].parent); // Recursion until find the root
@@ -189,7 +185,7 @@ void DisjunctSetsPC::print() const
 {
 	for (size_t i = 0; i < m_size; ++i)
 	{
-		std::cout << m_arr[i].data << " ";
+		std::cout << i << " ";
 	}
 	std::cout << '\n';
 	for (size_t i = 0; i < m_size; ++i)

@@ -24,11 +24,14 @@ public:
 
 	unsigned int size = 0;
 	float maxLoad;
+	unsigned int collisions = 0;
 
 	std::vector<std::vector<Node>> data;
 
 	void insert(const unsigned int key, const T& value);
 	void rehash(); // Doubles the size of the hash table
+
+	void erase(const unsigned int key);
 
 	void set(const unsigned int key, const T& value);
 	T& get(const unsigned int key);
@@ -65,13 +68,16 @@ template <typename T>
 void HashInt<T>::insert(const unsigned int key, const T& value)
 {
 	unsigned int index = h(key);
+	if (data[index].size() > 0)
+	{
+		++collisions;
+	}
 	data[index].emplace_back(key, value);
 	++size;
 
 	//   n     maxAlpha      m
 	if (size > maxLoad * data.size())
 	{
-		std::cout << "Rehashing\n";
 		rehash();
 	}
 }
@@ -89,6 +95,25 @@ void HashInt<T>::rehash()
 		{
 			unsigned int index = h(oldData[i][j].key);
 			data[index].emplace_back(oldData[i][j].key, oldData[i][j].value);
+			if (data[index].size() > 1)
+			{
+				++collisions;
+			}
+		}
+	}
+}
+
+template <typename T>
+void HashInt<T>::erase(const unsigned int key)
+{
+	unsigned int index = h(key);
+	for (int i = 0; i < data[index].size(); ++i) // Search in the collision list
+	{
+		if (data[index][i].key == key)
+		{
+			data[index].erase(data[index].begin() + i);
+			--size;
+			return;
 		}
 	}
 }
